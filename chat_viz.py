@@ -15,7 +15,7 @@ def chat_parser(chat):
 
 chat_tstamp = chat_parser(chat)       
 # print (chat_tstamp) 
-def sender_dict_create(parsed_chat) #create nested dicts
+def sender_dict_create(parsed_chat): #create nested dicts
     sender_dict_tstamp = {}
     for line in parsed_chat:
         time_index = line.find("-")
