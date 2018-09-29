@@ -23,5 +23,6 @@ def sender_dict_create(parsed_chat): #create nested dicts
         colon_index = line[time_index+2:].find(':')
         name_tstamp = line[time_index+2:colon_index+time_index+2]
         sender_dict_tstamp[name_tstamp] = line
+        return sender_dict_tstamp
 #print(sender_dict_tstamp.keys())
 sender_dict_tstamp = sender_dict_create(chat_tstamp)
