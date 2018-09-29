@@ -5,3 +5,6 @@ def is_date(string):
         return True
     except ValueError:
         return False
+
+def parse_datetime(string):
+    return parse(string)
