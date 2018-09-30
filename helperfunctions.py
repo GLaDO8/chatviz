@@ -1,4 +1,4 @@
-from dateutil.parser import *
+from dateutil.parser import parse
 def is_date(string):
     try: 
         parse(string)
