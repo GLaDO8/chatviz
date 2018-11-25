@@ -1,36 +1,25 @@
 import importer
 import data_parser
 import matplotlib.pyplot as plt
-# open text file
+import emoji
 
-def plt_tseries_len(chat_tstamp):
-    for key in chat_tstamp.keys():
-        for tstamp in chat_tstamp[key].keys():
-            for texts in chat_tstamp[key][tstamp]:
-                text_len = 0
-                for text in texts:
-                    text_len = text_len + len(text)
-            chat_tstamp[key][tstamp].insert(0, text_len)
-    colors = ['r', 'g', 'b']
-    for i, key in enumerate(chat_tstamp.keys(), 0):
-        temp = []
-        for texts in chat_tstamp[key].values():
-            temp.append(texts[0])
-        plt.plot(chat_tstamp[key].keys(), temp, colors[i])
-    plt.show()
-        # count = 0
-        # avg = [], mean_list1 = [], mean_list2 = []
-        # for i, val in enumerate(chat_tstamp[key].keys(), 1):
-        #     count = count+1
-        #     if (count <=7 && i!=len(chat_tstamp[key].keys())):
-        #         avg.append(val)
-        #     else if(count>7):
-        #         mean_list2.append(mean(avg))
-
-
-
+def make_features(raw_data):
+    raw_data.text = raw_data.text.apply(lambda x: re.sub("\n|\\n", " ", x))
+    raw_data["timestamp"] = raw_data.text.apply(lambda x: re.search("([0-9]{1,}\/[0-9]{1,}\/[0-9]{1,}\, [0-9]{1,}\:[0-9]{1,} (AM|PM))", x).group(1))
+    raw_data.text = raw_data.text.apply(lambda x: re.sub("([0-9]{1,}\/[0-9]{1,}\/[0-9]{1,}\, [0-9]{1,}\:[0-9]{1,} (AM|PM)) \- ","", x))
+    raw_data["sender"] = raw_data.text.apply(lambda x: x[:x.find(":")])
+    raw_data.text = raw_data.text.apply(lambda x: x[x.find(":")+2:])
+    raw_data["year"] = pd.to_datetime(raw_data['timestamp']).dt.year
+    raw_data["month"] = pd.to_datetime(raw_data['timestamp']).dt.month
+    raw_data["day"] = pd.to_datetime(raw_data['timestamp']).dt.day
+    raw_data["hour"] = pd.to_datetime(raw_data['timestamp']).dt.hour
+    raw_data["text_length"] = raw_data.text.apply(lambda x: len(x))
+    raw_data["gif/image/video"] = raw_data.text.apply(lambda x: 1 if (x.find("<Media omitted>") != -1) else 0)
+    raw_data['emojis'] = raw_data.text.apply(lambda x: ''.join(emo for emo in x if emo in emoji.UNICODE_EMOJI))
+    raw_data['no_emojis'] = raw_data.text.apply(lambda x: len(''.join(emo for emo in x if emo in emoji.UNICODE_EMOJI)))
+    return raw_data
 
 if __name__ == "__main__":
     chat = importer.chat_import("/Users/glados/Documents/test_data.txt")
-    chat_tstamp = data_parser.parse_chat(chat) 
-    plt_tseries_len(chat_tstamp)
+    raw_data = data_parser.parse_chat(chat) 
+    pro_data = make_features(raw_data)
