@@ -1,4 +1,4 @@
-# Chat visualization features
+# chatviz - visualise your whatsapp chats!
 There are a lot of tools outside which let you visualize your chatting behavior with your friend or your partner, but most of them require you to mail/upload your chat data and **compromise on privacy**. Moreover, the visualizations provided are either **limited or dull**. 
 
 **chatviz** tackles both the issues. By making the code open-source and bringing the analytics engine to the user-end, you have complete control over your data. In order to further enhance security, **chatviz** automatically **flushes all variables and tables** once analysis is done. 
